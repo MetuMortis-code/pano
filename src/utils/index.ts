@@ -1,8 +1,9 @@
+import { json } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-import { json } from "@remix-run/node";
 
 import type { User } from "~/models/user.server";
+import { Post } from "~/models/post.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -72,10 +73,11 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function validateURL(url: string) {
-  const expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
+  const expression =
+    /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 
-  if (url.match(expression)){
-    return true
+  if (url.match(expression)) {
+    return true;
   }
 }
 export function validateUsername(username: unknown): username is string {
@@ -84,3 +86,17 @@ export function validateUsername(username: unknown): username is string {
 export function validatePassword(password: unknown): password is string {
   return typeof password === "string" && password.length > 8;
 }
+
+export function getExternalPostURL(post: Post) {
+  const location = global.location;
+  const postUrl = `${location.origin}/posts/${post.slug}-${post.id}`;
+  return postUrl;
+}
+
+export declare type $ElementProps<T> = T extends React.ComponentType<
+  infer Props
+>
+  ? Props extends object
+    ? Props
+    : never
+  : never;
